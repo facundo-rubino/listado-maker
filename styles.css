@@ -1,19 +1,21 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap");
 
 :root {
-  --bg: #eef3f9;
-  --bg-accent: #dce8f7;
-  --card: #ffffff;
-  --border: #d6dfeb;
-  --text: #10223a;
-  --muted: #5d6f86;
-  --primary: #1766d4;
-  --primary-2: #0f4fa8;
+  --bg: #f4f2ec;
+  --bg-accent: #dbe7de;
+  --card: #fffcf7;
+  --card-soft: #f8f5ef;
+  --border: #d6d2c8;
+  --text: #1f2a24;
+  --muted: #647267;
+  --primary: #0f7b6c;
+  --primary-2: #0a5e53;
+  --primary-soft: #d4f0eb;
   --danger: #c92424;
   --success: #16824b;
   --warning: #b98616;
-  --soft-shadow: 0 12px 30px rgba(7, 25, 45, 0.08);
-  --hard-shadow: 0 20px 40px rgba(7, 25, 45, 0.12);
+  --soft-shadow: 0 12px 30px rgba(30, 40, 35, 0.09);
+  --hard-shadow: 0 20px 45px rgba(30, 40, 35, 0.16);
   --radius-md: 14px;
   --radius-lg: 20px;
   --page-width: 210mm;
@@ -31,7 +33,10 @@ body {
   color: var(--text);
   background:
     radial-gradient(circle at 0% -20%, var(--bg-accent), transparent 48%),
-    radial-gradient(circle at 100% -30%, #e7eef9, transparent 42%), var(--bg);
+    radial-gradient(circle at 100% -30%, #ebefe1, transparent 42%),
+    linear-gradient(140deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.35)),
+    var(--bg);
+  min-height: 100vh;
 }
 
 h1,
@@ -63,6 +68,7 @@ button {
   color: var(--text);
   border-radius: 12px;
   padding: 10px 14px;
+  font-weight: 700;
   cursor: pointer;
   transition:
     transform 0.18s ease,
@@ -73,7 +79,7 @@ button {
 
 button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(7, 25, 45, 0.1);
+  box-shadow: 0 10px 24px rgba(31, 42, 36, 0.12);
 }
 
 button:disabled {
@@ -85,12 +91,12 @@ button:disabled {
 
 button.primary {
   color: #fff;
-  background: var(--primary);
+  background: linear-gradient(135deg, #118573 0%, var(--primary) 100%);
   border-color: var(--primary);
 }
 
 button.primary:hover {
-  background: var(--primary-2);
+  background: linear-gradient(135deg, #0f7465 0%, var(--primary-2) 100%);
   border-color: var(--primary-2);
 }
 
@@ -116,6 +122,16 @@ select {
   padding: 10px 12px;
   background: #fff;
   color: var(--text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+textarea:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: #7eb8ae;
+  box-shadow: 0 0 0 4px rgba(15, 123, 108, 0.12);
 }
 
 textarea {
@@ -124,11 +140,11 @@ textarea {
 }
 
 .app {
-  max-width: 1480px;
+  max-width: 1540px;
   margin: 0 auto;
-  padding: 22px;
+  padding: 28px;
   display: grid;
-  gap: 22px;
+  gap: 24px;
   grid-template-columns: 470px 1fr;
   align-items: start;
 }
@@ -142,7 +158,7 @@ textarea {
 
 .panel {
   border: 1px solid var(--border);
-  background: var(--card);
+  background: linear-gradient(180deg, var(--card) 0%, #fff 100%);
   border-radius: var(--radius-lg);
   box-shadow: var(--soft-shadow);
   padding: 16px;
@@ -150,7 +166,8 @@ textarea {
 
 .hero h1 {
   margin-bottom: 8px;
-  font-size: 24px;
+  font-size: 26px;
+  letter-spacing: -0.01em;
 }
 
 .hero p {
@@ -158,7 +175,7 @@ textarea {
 }
 
 .phase-indicator-panel {
-  background: linear-gradient(145deg, #ffffff 0%, #f3f7fd 100%);
+  background: linear-gradient(145deg, #ffffff 0%, #f4fbf9 100%);
 }
 
 .phase-steps {
@@ -187,9 +204,9 @@ textarea {
 }
 
 .phase-steps li.completed {
-  color: #0f4a8e;
-  border-color: #9ec2ef;
-  background: #e8f2ff;
+  color: #0d5449;
+  border-color: #9dd3c9;
+  background: #e7f7f3;
 }
 
 .phase h2 {
@@ -197,7 +214,7 @@ textarea {
 }
 
 .nav-panel {
-  background: linear-gradient(145deg, #ffffff 0%, #f6f9fe 100%);
+  background: linear-gradient(145deg, #ffffff 0%, #f3f8f6 100%);
 }
 
 .preview-shell {
@@ -207,6 +224,7 @@ textarea {
 
 .preview-panel {
   padding: 14px 18px;
+  background: linear-gradient(145deg, #ffffff 0%, #f6faf7 100%);
 }
 
 .preview-panel h2 {
@@ -232,7 +250,7 @@ textarea {
   width: var(--page-width);
   min-height: var(--page-height);
   margin: 0 auto;
-  border: 1px solid #c4d3e5;
+  border: 1px solid #d7d7cf;
   background: #fff;
   box-shadow: var(--hard-shadow);
   border-radius: 10px;
@@ -259,7 +277,7 @@ textarea {
 
 .page-subtitle {
   font-size: 12px;
-  color: #485f79;
+  color: #4f6053;
 }
 
 .grid {
@@ -269,7 +287,7 @@ textarea {
 }
 
 .student-card {
-  border: 1px solid #d1d9e6;
+  border: 1px solid #dad7ce;
   border-radius: 8px;
   text-align: center;
   display: grid;
@@ -283,21 +301,21 @@ textarea {
   aspect-ratio: 3 / 4;
   object-fit: cover;
   border-radius: 6px;
-  border: 1px solid #e3e8f0;
-  background: #f0f4fa;
+  border: 1px solid #ebe8df;
+  background: #f3f1ea;
 }
 
 .student-placeholder {
   width: 100%;
   aspect-ratio: 3 / 4;
   border-radius: 6px;
-  border: 1px dashed #c3cfdf;
+  border: 1px dashed #c8c6bf;
   background: repeating-linear-gradient(
     45deg,
-    #f7f9fc,
-    #f7f9fc 10px,
-    #edf2f8 10px,
-    #edf2f8 20px
+    #fbfaf5,
+    #fbfaf5 10px,
+    #f2efe8 10px,
+    #f2efe8 20px
   );
 }
 
@@ -315,7 +333,7 @@ textarea {
 .empty-state {
   border: 2px dashed var(--border);
   border-radius: var(--radius-lg);
-  background: #fff;
+  background: linear-gradient(145deg, #fffefb 0%, #f6f3eb 100%);
   padding: 30px;
   text-align: center;
   color: var(--muted);
@@ -325,7 +343,7 @@ textarea {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px 12px;
-  background: #f7faff;
+  background: #f3faf8;
 }
 
 .progress-block {
@@ -338,23 +356,23 @@ textarea {
   height: 10px;
   border-radius: 999px;
   overflow: hidden;
-  background: #e8eef7;
+  background: #e6ece8;
 }
 
 .progress-fill {
   width: 0;
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #1a6fe4 0%, #13a08b 100%);
+  background: linear-gradient(90deg, #1c8f7f 0%, #d0ab56 100%);
   transition: width 0.2s ease;
 }
 
 .dropzone {
-  border: 2px dashed #79a9ea;
+  border: 2px dashed #83b9ae;
   border-radius: 14px;
   padding: 18px;
   text-align: center;
-  background: #f0f6ff;
+  background: #f1faf8;
   transition:
     background-color 0.18s ease,
     border-color 0.18s ease;
@@ -367,14 +385,14 @@ textarea {
 }
 
 .dropzone.dragover {
-  background: #dcebff;
+  background: #def3ef;
   border-color: var(--primary);
 }
 
 .step-box {
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #f9fbfe;
+  background: linear-gradient(145deg, #ffffff 0%, var(--card-soft) 100%);
   padding: 12px;
 }
 
@@ -392,7 +410,7 @@ textarea {
   border: 1px solid var(--border);
   margin: 10px auto 0;
   display: block;
-  background: #eff4fa;
+  background: #f0eee7;
 }
 
 .edit-list {
@@ -411,7 +429,7 @@ textarea {
   gap: 8px;
   grid-template-columns: 34px minmax(220px, 1fr) auto;
   align-items: center;
-  background: #fff;
+  background: linear-gradient(145deg, #ffffff 0%, #faf8f1 100%);
 }
 
 .edit-name {
@@ -421,7 +439,7 @@ textarea {
 }
 
 .edit-name input {
-  border-color: #b9cbe3;
+  border-color: #b9cabc;
   background: #fdfefe;
   font-weight: 600;
 }
@@ -434,8 +452,8 @@ textarea {
   place-items: center;
   font-size: 12px;
   font-weight: 800;
-  color: #27425f;
-  background: #e7eef8;
+  color: #18443b;
+  background: #dff2ed;
 }
 
 .photo-pill {
@@ -522,16 +540,16 @@ textarea {
   aspect-ratio: 3 / 4;
   margin: 0 auto;
   border-radius: 12px;
-  border: 2px solid #94b8e9;
+  border: 2px solid #91bca8;
   background: linear-gradient(
     45deg,
-    #f4f7fc 25%,
-    #e8eef8 25%,
-    #e8eef8 50%,
-    #f4f7fc 50%,
-    #f4f7fc 75%,
-    #e8eef8 75%,
-    #e8eef8 100%
+    #f8f6ee 25%,
+    #ece8de 25%,
+    #ece8de 50%,
+    #f8f6ee 50%,
+    #f8f6ee 75%,
+    #ece8de 75%,
+    #ece8de 100%
   );
   background-size: 20px 20px;
   overflow: hidden;

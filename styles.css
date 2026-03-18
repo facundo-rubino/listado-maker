@@ -257,6 +257,8 @@ textarea {
   padding: var(--page-padding);
   page-break-after: always;
   break-after: page;
+  display: flex;
+  flex-direction: column;
 }
 
 .page:last-child {
@@ -284,6 +286,8 @@ textarea {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 4mm;
+  flex: 1;
+  min-height: 0;
 }
 
 .student-card {
@@ -292,7 +296,7 @@ textarea {
   text-align: center;
   display: grid;
   gap: 2.2mm;
-  min-height: 41mm;
+  min-height: 0;
   padding: 3mm;
 }
 
@@ -512,6 +516,35 @@ textarea {
   display: none;
 }
 
+.layout-status {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f7faf8;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #234238;
+}
+
+.layout-status.ok {
+  border-color: #9fcfb2;
+  background: #ebf7ef;
+  color: #185133;
+}
+
+.layout-status.warn {
+  border-color: #e0c682;
+  background: #fff6de;
+  color: #78560c;
+}
+
+.layout-status.alert {
+  border-color: #e3aaaa;
+  background: #ffeceb;
+  color: #8c2525;
+}
+
 .crop-modal {
   border: none;
   padding: 0;
@@ -597,6 +630,10 @@ textarea {
     aspect-ratio: 210 / 297;
     padding: 18px;
   }
+
+  .layout-status {
+    margin-top: 10px;
+  }
 }
 
 @media (max-width: 760px) {
@@ -650,6 +687,10 @@ textarea {
     box-shadow: none;
     margin: 0;
     padding: 10mm;
+  }
+
+  .layout-status {
+    display: none !important;
   }
 
   @page {

@@ -31,6 +31,7 @@ const pageTitleInput = $("pageTitle");
 const pageSubtitleInput = $("pageSubtitle");
 const perPageInput = $("perPage");
 const columnsInput = $("columns");
+const layoutStatus = $("layoutStatus");
 
 const statusBox = $("statusBox");
 const photoProgressText = $("photoProgressText");
@@ -172,6 +173,54 @@ function getDisplayName(value) {
   }
 
   return `${surname}, ${firstNames}`;
+}
+
+function getLayoutMetrics() {
+  const rowsPerPage = Math.max(
+    1,
+    Math.ceil(state.settings.perPage / state.settings.columns),
+  );
+
+  const pageHeightMm = 297;
+  const pagePaddingTopMm = 10;
+  const pagePaddingBottomMm = 10;
+  const headerBlockMm = 18;
+  const rowGapMm = 4;
+  const usableHeightMm =
+    pageHeightMm - pagePaddingTopMm - pagePaddingBottomMm - headerBlockMm;
+  const totalGapMm = Math.max(0, rowsPerPage - 1) * rowGapMm;
+  const rowHeightMm = (usableHeightMm - totalGapMm) / rowsPerPage;
+
+  return {
+    rowsPerPage,
+    rowHeightMm,
+    usableHeightMm,
+  };
+}
+
+function renderLayoutStatus() {
+  if (!layoutStatus) return;
+
+  const metrics = getLayoutMetrics();
+  layoutStatus.classList.remove("ok", "warn", "alert");
+
+  const rowHeightRounded = Math.round(metrics.rowHeightMm);
+  const headline = `A4 útil: ${Math.round(metrics.usableHeightMm)} mm · Filas estimadas: ${metrics.rowsPerPage} · Alto por card: ${rowHeightRounded} mm`;
+
+  if (metrics.rowHeightMm < 28) {
+    layoutStatus.classList.add("alert");
+    layoutStatus.textContent = `${headline}. Muy ajustado: puede cortar o volver ilegibles fotos y nombres al imprimir.`;
+    return;
+  }
+
+  if (metrics.rowHeightMm < 34) {
+    layoutStatus.classList.add("warn");
+    layoutStatus.textContent = `${headline}. Ajuste medio: imprime una prueba para validar legibilidad.`;
+    return;
+  }
+
+  layoutStatus.classList.add("ok");
+  layoutStatus.textContent = `${headline}. Buen margen para imprimir sin cortes.`;
 }
 
 function sortStudents() {
@@ -480,6 +529,8 @@ function renderPreview() {
     const grid = document.createElement("div");
     grid.className = "grid";
     grid.style.gridTemplateColumns = `repeat(${state.settings.columns}, 1fr)`;
+    const { rowsPerPage } = getLayoutMetrics();
+    grid.style.gridTemplateRows = `repeat(${rowsPerPage}, minmax(0, 1fr))`;
 
     pageStudents.forEach((student) => {
       const displayName = getDisplayName(student.name);
@@ -764,6 +815,7 @@ function renderAll() {
   clampSettings();
   syncInputsFromState();
   renderShell();
+  renderLayoutStatus();
   renderGuidedStep();
   renderEditList();
   renderPreview();
@@ -817,6 +869,7 @@ function applySettingsLive() {
     2,
     Math.min(8, Number(columnsInput.value) || 5),
   );
+  renderLayoutStatus();
   renderPreview();
   updateFinalSummary();
   queueSave();

@@ -108,7 +108,8 @@ button.danger {
 
 textarea,
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+select {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 12px;

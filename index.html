@@ -33,8 +33,15 @@
 
             <section class="panel phase" data-phase="1">
                 <h2>Paso 1: Cargar y ordenar nombres</h2>
-                <p class="small muted">Pega un alumno por línea o separado por coma. Se ordena automáticamente de A a Z.
+                <p class="small muted">Pega un alumno por línea o separado por coma. Elige si ordenar de A a Z por nombre o por apellido.
                 </p>
+                <div>
+                    <label for="sortByInput"><strong>Ordenar por</strong></label>
+                    <select id="sortByInput">
+                        <option value="name">Nombre</option>
+                        <option value="surname">Apellido</option>
+                    </select>
+                </div>
                 <label for="namesInput"><strong>Nombres de alumnos</strong></label>
                 <textarea id="namesInput" placeholder="Ejemplo:
 Ana Pérez

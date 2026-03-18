@@ -10,6 +10,7 @@ const state = {
     subtitle: "Fotos y nombres",
     perPage: 30,
     columns: 5,
+    sortBy: "name",
   },
   save: {
     lastSavedAt: null,
@@ -21,6 +22,7 @@ let saveTimer = null;
 const $ = (id) => document.getElementById(id);
 
 const namesInput = $("namesInput");
+const sortByInput = $("sortByInput");
 const loadNamesBtn = $("loadNamesBtn");
 const sortAgainBtn = $("sortAgainBtn");
 const clearAllBtn = $("clearAllBtn");
@@ -110,10 +112,42 @@ function createStudent(name) {
   };
 }
 
+const nameCollator = new Intl.Collator("es", { sensitivity: "base" });
+
+function getNameParts(value) {
+  const fullName = String(value || "").trim();
+  const parts = fullName.split(/\s+/).filter(Boolean);
+  const surname = parts.length > 1 ? parts[parts.length - 1] : fullName;
+  const firstNames = parts.length > 1 ? parts.slice(0, -1).join(" ") : fullName;
+
+  return {
+    fullName,
+    surname,
+    firstNames,
+  };
+}
+
 function sortStudents() {
-  state.students.sort((a, b) =>
-    a.name.localeCompare(b.name, "es", { sensitivity: "base" }),
-  );
+  if (state.settings.sortBy === "surname") {
+    state.students.sort((a, b) => {
+      const aParts = getNameParts(a.name);
+      const bParts = getNameParts(b.name);
+
+      const bySurname = nameCollator.compare(aParts.surname, bParts.surname);
+      if (bySurname !== 0) return bySurname;
+
+      const byFirstNames = nameCollator.compare(
+        aParts.firstNames,
+        bParts.firstNames,
+      );
+      if (byFirstNames !== 0) return byFirstNames;
+
+      return nameCollator.compare(aParts.fullName, bParts.fullName);
+    });
+    return;
+  }
+
+  state.students.sort((a, b) => nameCollator.compare(a.name, b.name));
 }
 
 function rebuildCurrentIndex() {
@@ -142,6 +176,9 @@ function clampSettings() {
     2,
     Math.min(8, Number(state.settings.columns) || 5),
   );
+  if (!["name", "surname"].includes(state.settings.sortBy)) {
+    state.settings.sortBy = "name";
+  }
   if (!state.settings.title?.trim()) {
     state.settings.title = "Listado de alumnos";
   }
@@ -155,6 +192,7 @@ function syncInputsFromState() {
   pageSubtitleInput.value = state.settings.subtitle;
   perPageInput.value = state.settings.perPage;
   columnsInput.value = state.settings.columns;
+  sortByInput.value = state.settings.sortBy;
 }
 
 function queueSave() {
@@ -202,6 +240,7 @@ function loadSavedState() {
         subtitle: parsed.settings.subtitle || "Fotos y nombres",
         perPage: Number(parsed.settings.perPage) || 30,
         columns: Number(parsed.settings.columns) || 5,
+        sortBy: parsed.settings.sortBy || "name",
       };
     }
 
@@ -704,6 +743,7 @@ function resetWorkflow() {
     subtitle: "Fotos y nombres",
     perPage: 30,
     columns: 5,
+    sortBy: "name",
   };
 
   namesInput.value = "";
@@ -908,6 +948,7 @@ async function importDataFromFile(file) {
       subtitle: data.settings?.subtitle || "Fotos y nombres",
       perPage: Number(data.settings?.perPage) || 30,
       columns: Number(data.settings?.columns) || 5,
+      sortBy: data.settings?.sortBy || "name",
     };
 
     state.currentPhase = Math.max(
@@ -943,6 +984,15 @@ pageTitleInput.addEventListener("input", applySettingsLive);
 pageSubtitleInput.addEventListener("input", applySettingsLive);
 perPageInput.addEventListener("input", applySettingsLive);
 columnsInput.addEventListener("input", applySettingsLive);
+
+sortByInput.addEventListener("change", () => {
+  state.settings.sortBy = sortByInput.value;
+  sortStudents();
+  rebuildCurrentIndex();
+  namesInput.value = state.students.map((student) => student.name).join("\n");
+  renderAll();
+  queueSave();
+});
 
 prevPhaseBtn.addEventListener("click", prevPhase);
 nextPhaseBtn.addEventListener("click", nextPhase);

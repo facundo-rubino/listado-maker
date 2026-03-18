@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listado de alumnos con fotos</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="app">
+        <aside class="wizard no-print">
+            <section class="panel hero">
+                <h1>Listado de alumnos con fotos</h1>
+                <p class="muted">Sigue cada etapa para cargar nombres, asignar fotos y obtener una hoja A4 lista para
+                    imprimir.</p>
+            </section>
+
+            <section class="panel phase-indicator-panel">
+                <div class="inline between">
+                    <strong id="phaseLabel">Paso 1 de 5</strong>
+                    <span class="small muted" id="saveStatus">Guardado local activo</span>
+                </div>
+                <ol class="phase-steps" id="phaseSteps">
+                    <li data-step="1">Cargar</li>
+                    <li data-step="2">Configurar</li>
+                    <li data-step="3">Fotos</li>
+                    <li data-step="4">Editar</li>
+                    <li data-step="5">Final</li>
+                </ol>
+            </section>
+
+            <section class="panel phase" data-phase="1">
+                <h2>Paso 1: Cargar y ordenar nombres</h2>
+                <p class="small muted">Pega un alumno por línea o separado por coma. Se ordena automáticamente de A a Z.
+                </p>
+                <label for="namesInput"><strong>Nombres de alumnos</strong></label>
+                <textarea id="namesInput" placeholder="Ejemplo:
+Ana Pérez
+Bruno Silva
+Carla Gómez"></textarea>
+                <div class="toolbar">
+                    <button class="primary" id="loadNamesBtn">Cargar y ordenar</button>
+                    <button id="sortAgainBtn">Reordenar</button>
+                    <button id="clearAllBtn">Limpiar todo</button>
+                </div>
+            </section>
+
+            <section class="panel phase hidden" data-phase="2">
+                <h2>Paso 2: Configurar impresión</h2>
+                <p class="small muted">Los cambios se aplican en tiempo real sobre la vista previa.</p>
+                <div class="settings-grid">
+                    <div>
+                        <label for="pageTitle">Título</label>
+                        <input id="pageTitle" type="text" value="Listado de alumnos" />
+                    </div>
+                    <div>
+                        <label for="pageSubtitle">Subtítulo</label>
+                        <input id="pageSubtitle" type="text" value="Fotos y nombres" />
+                    </div>
+                    <div>
+                        <label for="perPage">Alumnos por hoja</label>
+                        <input id="perPage" type="number" min="1" max="60" value="30" />
+                    </div>
+                    <div>
+                        <label for="columns">Columnas por hoja</label>
+                        <input id="columns" type="number" min="2" max="8" value="5" />
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel phase hidden" data-phase="3">
+                <h2>Paso 3: Asignar fotos</h2>
+                <div class="status" id="statusBox">Todavía no cargaste alumnos.</div>
+
+                <div class="progress-block">
+                    <div class="inline between">
+                        <span id="photoProgressText">0/0 fotos cargadas</span>
+                        <span class="small muted" id="missingCount">0 pendientes</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="photoProgressFill"></div>
+                    </div>
+                </div>
+
+                <div class="step-box hidden" id="stepBox">
+                    <div class="muted">Siguiente alumno</div>
+                    <div class="step-name" id="currentStudentName">-</div>
+                    <div class="dropzone" id="dropzone">
+                        <strong id="dropText">Arrastra la imagen de...</strong>
+                        <span class="muted">o haz clic para elegir un archivo</span>
+                        <input class="file-input" type="file" id="photoInput" accept="image/*" />
+                    </div>
+                    <img id="thumbPreview" class="thumb-preview hidden" alt="Vista previa" />
+                    <div class="toolbar">
+                        <button id="skipBtn">Saltar por ahora</button>
+                        <button id="nextWithoutPhotoBtn">Siguiente sin foto</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel phase hidden" data-phase="4">
+                <h2>Paso 4: Edición rápida</h2>
+                <p class="small muted">Edita nombres, elimina alumnos o cambia una foto puntual.</p>
+                <div class="toolbar">
+                    <button id="addStudentBtn">Agregar alumno</button>
+                    <button id="exportBtn">Exportar datos</button>
+                    <button id="importBtn">Importar datos</button>
+                </div>
+                <input class="file-input" type="file" id="importFile" accept="application/json" />
+                <div class="edit-list" id="editList"></div>
+            </section>
+
+            <section class="panel phase hidden" data-phase="5">
+                <h2>Paso 5: Revisión final e impresión</h2>
+                <p class="small muted" id="finalSummary">Revisa la grilla y luego imprime en A4 vertical.</p>
+                <p class="small muted">Después de imprimir puedes descargar un documento y, si terminaste, reiniciar para empezar desde cero.</p>
+                <div class="toolbar">
+                    <button class="success" id="printBtn">Imprimir</button>
+                    <button id="downloadDocBtn">Descargar .doc</button>
+                    <button id="backToPhotosBtn">Volver a fotos pendientes</button>
+                    <button class="danger" id="resetWorkflowBtn">Cancelar y empezar de 0</button>
+                </div>
+            </section>
+
+            <section class="panel nav-panel">
+                <div class="toolbar between">
+                    <button id="prevPhaseBtn">Anterior</button>
+                    <button class="primary" id="nextPhaseBtn">Siguiente</button>
+                </div>
+            </section>
+        </aside>
+
+        <main class="preview-shell">
+            <div class="panel preview-panel no-print">
+                <h2 id="previewTitle">Vista previa</h2>
+                <p class="small muted" id="previewHint">Vista compacta durante la edición. En el paso final verás la
+                    vista completa.</p>
+            </div>
+            <div class="preview-area compact" id="previewArea">
+                <div class="empty-state">
+                    <h2>Vista previa</h2>
+                    <p>Carga alumnos para generar la grilla de impresión.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <dialog class="crop-modal no-print" id="cropModal" aria-labelledby="cropTitle">
+        <div class="crop-card">
+            <h2 id="cropTitle">Ajustar foto</h2>
+            <p class="small muted">Mueve y escala la imagen. El recorte mantiene la proporción real de impresión (3:4).
+            </p>
+
+            <div class="crop-viewport" id="cropViewport">
+                <img id="cropImage" alt="Recorte de foto" draggable="false" />
+            </div>
+
+            <label for="cropZoom" class="small"><strong>Zoom</strong></label>
+            <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" />
+
+            <div class="toolbar between">
+                <button id="cropCancelBtn">Cancelar</button>
+                <button class="primary" id="cropApplyBtn">Aplicar recorte</button>
+            </div>
+        </div>
+    </dialog>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

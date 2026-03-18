@@ -127,6 +127,20 @@ function getNameParts(value) {
   };
 }
 
+function getDisplayName(value) {
+  const { fullName, surname, firstNames } = getNameParts(value);
+
+  if (state.settings.sortBy !== "surname") {
+    return fullName;
+  }
+
+  if (!firstNames || firstNames === surname) {
+    return fullName;
+  }
+
+  return `${surname}, ${firstNames}`;
+}
+
 function sortStudents() {
   if (state.settings.sortBy === "surname") {
     state.students.sort((a, b) => {
@@ -435,15 +449,17 @@ function renderPreview() {
     grid.style.gridTemplateColumns = `repeat(${state.settings.columns}, 1fr)`;
 
     pageStudents.forEach((student) => {
+      const displayName = getDisplayName(student.name);
+
       const card = document.createElement("div");
       card.className = "student-card";
       card.innerHTML = `
         ${
           student.photo
-            ? `<img class="student-photo" src="${student.photo}" alt="${escapeHtml(student.name)}" />`
+            ? `<img class="student-photo" src="${student.photo}" alt="${escapeHtml(displayName)}" />`
             : `<div class="student-placeholder" aria-hidden="true"></div>`
         }
-        <div class="student-name">${escapeHtml(student.name)}</div>
+        <div class="student-name">${escapeHtml(displayName)}</div>
       `;
       grid.appendChild(card);
     });

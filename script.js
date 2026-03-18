@@ -98,8 +98,41 @@ const phaseTitles = {
 };
 
 function normalizeNames(raw) {
-  return raw
-    .split(/[\n,]/)
+  const lines = raw
+    .split(/\r?\n/)
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  if (lines.length === 0) return [];
+
+  const allLinesAreSingleCommaPair =
+    lines.length > 1 &&
+    lines.every((line) => {
+      const commaCount = (line.match(/,/g) || []).length;
+      return commaCount === 1;
+    });
+
+  if (allLinesAreSingleCommaPair) {
+    return lines
+      .map((line) => {
+        const [left, right] = line.split(",").map((part) => part.trim());
+        if (!left || !right) {
+          return line.replace(/,/g, " ").replace(/\s+/g, " ").trim();
+        }
+        return `${right} ${left}`.replace(/\s+/g, " ").trim();
+      })
+      .filter(Boolean);
+  }
+
+  if (lines.length === 1) {
+    return lines[0]
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+  }
+
+  return lines
+    .flatMap((line) => line.split(","))
     .map((value) => value.trim())
     .filter(Boolean);
 }
